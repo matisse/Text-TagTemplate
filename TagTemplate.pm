@@ -31,7 +31,7 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-# '$Revision: 1.8 $' =~ /([\d.]+)/;
+# '$Revision: 1.9 $' =~ /([\d.]+)/;
 $VERSION = '1.6.1';
 use IO::File;
 require Exporter;
@@ -184,7 +184,7 @@ sub _urlesc($)
 
 =head1 VERSION
 
-	$Revision: 1.8 $
+	1.6.1
 
 =head1 SYNOPSIS
 
