@@ -6,7 +6,7 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..66\n"; }
+BEGIN { $| = 1; print "1..68\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Text::TagTemplate;
 $loaded = 1;
@@ -578,3 +578,14 @@ if ( $out ne q{EMBEDDED TAG: NAME="hello=world"} ) {
 } else {
 	print "ok 66\n";
 }
+
+print "Is 0 (zero) handled properly as a replacement value?\n";
+$t->add_tag( ZERO => sub { 0; } );
+$out = $t->parse( qq{Zero: <#ZERO>} );
+print $out, "\n";
+if ( $out ne 'Zero: 0' ) {
+       print "not ok 67\n";
+} else {
+       print "ok 67\n";
+}
+

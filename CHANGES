@@ -2,9 +2,17 @@
 
 CHANGES for Text::TagTemplate
 
-$Id: CHANGES,v 1.8 2003/12/02 16:41:57 matisse Exp $
+$Id: CHANGES,v 1.9 2004/05/11 03:00:18 matisse Exp $
 
 ================================================================================
+
+Version 1.8
+
+Minor tweak to how I handle the case where the replacement value for the tag
+is empty. The previous method had a bug where replacement values of 0 (zero)
+got removed.
+
+--------------------------------------------------------------------------------
 
 Version 1.7
 
