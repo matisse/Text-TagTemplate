@@ -3,25 +3,39 @@
 README for Text::TagTemplate
 
 Copyright (C) 1999 SF Interactive, Inc.  All rights reserved.
+License: GNU LGPL
 
 Maintainer: Matisse Enzer <matisse@matisse.net>
-Author:  Jacob Davies <jacob@well.com> <jacob@sfinteractive.com>
+Author:  Jacob Davies <jacob@well.com>
 
-$Id: README,v 1.5 2002/06/01 15:14:42 matisse Exp $
+$Id: README,v 1.6 2002/06/03 16:03:19 matisse Exp $
 
 ================================================================================
 
 This is the Text::TagTemplate module.
 
-It's designed to make the production of web-based applications such as CGI
-programs and Apache::Registry scripts easier and faster, by separating the HTML
-coding from the coding of the application logic.  It's also designed to be
-flexible, to use a template interface that is simple and easy for
-non-programmers to understand, and to be reasonably fast.
+TagTemplate is designed to completelt separate HTML/XML coding from
+the coding of the application logic.  It's also designed to be flexible,
+to use a template interface that is simple and easy for non-programmers
+to understand, and to be reasonably fast.
 
 There is not much particularly web-specific about it, and indeed it may well
 prove useful in other application areas; however, that is the main focus of the
 design.
+
+TagTemplate is a lightweight module that parses files replacing special
+tags with dynamically generated content. The tags look like HTML or XML
+tags, e.g.
+	<#search_results row_template="verbose.template" size="4">
+
+The module parses recursively and tags may be embedded in other tags.
+
+The module provides methods for associating each tag name ("search_results"
+in the example above) with a replacement action, which will usually be
+a subroutine. The tag attributes are passed to the subroutine as a hash
+reference. Whatever te subroutine returns replaces the entire tag.
+
+The module includes extensive documentation.
 
 There are other modules that do similar things that you may or may not be
 interested in:
@@ -45,7 +59,7 @@ of this module and may help you towards building your first application with
 it.
 
 I'd love to hear your suggestions, amendments, comments, bug reports, bug
-fixes, and the like.  Direct them to <jacob@well.com>.
+fixes, and the like.  Direct them to <matisse@matisse.net>.
 
 If you use this module in a web application, I'd also love to hear about it,
 particularly if the web application is also free software.
