@@ -31,7 +31,7 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-# '$Revision: 1.11 $' =~ /([\d.]+)/;
+# '$Revision: 1.12 $' =~ /([\d.]+)/;
 $VERSION = '1.8';
 use IO::File;
 require Exporter;
@@ -1233,7 +1233,7 @@ sub parse
 
 		# Substitute in the string.
                 {
-                    #no warnings; # Avoid stoopid warnings in case $rep is empty
+                    no warnings; # Avoid stoopid warnings in case $rep is empty
                     $string =~ s/<#$q_contents>/$rep/;
                 }
         }
