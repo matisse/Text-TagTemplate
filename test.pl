@@ -6,7 +6,7 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..65\n"; }
+BEGIN { $| = 1; print "1..66\n"; }
 END {print "not ok 1\n" unless $loaded;}
 use Text::TagTemplate;
 $loaded = 1;
@@ -566,4 +566,15 @@ if ( $out ne q{EMBEDDED TAG: NAME="hello"} ) {
 	print "not ok 65\n";
 } else {
 	print "ok 65\n";
+}
+
+print "Are attribute values containing '=' in embedded tags are handled OK?\n";
+print 'This:  EMBEDDED TAG: <#EMBEDTEST name="<#EMBED_1 ATTR_1="hello=world">">', " should result in:\n";
+print '    EMBEDDED TAG: NAME="hello=world"', "\n";
+$out = $t->parse( qq{EMBEDDED TAG: <#EMBEDTEST name="<#EMBED_1 ATTR_1="hello=world">">});
+print $out, "\n";
+if ( $out ne q{EMBEDDED TAG: NAME="hello=world"} ) {
+	print "not ok 66\n";
+} else {
+	print "ok 66\n";
 }

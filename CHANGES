@@ -2,9 +2,18 @@
 
 CHANGES for Text::TagTemplate
 
-$Id: CHANGES,v 1.5 2002/06/01 15:14:42 matisse Exp $
+$Id: CHANGES,v 1.6 2003/11/20 22:24:00 matisse Exp $
 
 ================================================================================
+
+Version 1.6.1
+
+Fixed bug in parse() where attribute values containing the = character
+were not handled properly in embedded tags. So
+    <#MYTAG SETTING="<#OTHERTAG FOO="3x4=12">">
+was is now handled properly.
+
+--------------------------------------------------------------------------------
 
 Version 1.5
 
