@@ -2,9 +2,15 @@
 
 CHANGES for Text::TagTemplate
 
-$Id: CHANGES,v 1.9 2004/05/11 03:00:18 matisse Exp $
+$Id: CHANGES,v 1.10 2004/05/11 07:38:35 matisse Exp $
 
 ================================================================================
+
+Version 1.81
+
+Supressed warnings when replacement string empty.
+
+--------------------------------------------------------------------------------
 
 Version 1.8
 
