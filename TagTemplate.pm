@@ -31,8 +31,8 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-# '$Revision: 1.10 $' =~ /([\d.]+)/;
-$VERSION = '1.7';
+# '$Revision: 1.11 $' =~ /([\d.]+)/;
+$VERSION = '1.8';
 use IO::File;
 require Exporter;
 use vars qw ( @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS );
@@ -1232,7 +1232,10 @@ sub parse
 		}
 
 		# Substitute in the string.
-                $string =~ s/<#$q_contents>/$rep/;
+                {
+                    #no warnings; # Avoid stoopid warnings in case $rep is empty
+                    $string =~ s/<#$q_contents>/$rep/;
+                }
         }
 
 	if ( $self->{ UNKNOWN_ACTION } eq 'IGNORE' ) {
