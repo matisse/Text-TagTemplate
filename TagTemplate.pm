@@ -31,7 +31,7 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-( $VERSION ) = '$Revision: 1.6 $' =~ /([\d.]+)/;
+( $VERSION ) = '$Revision: 1.7 $' =~ /([\d.]+)/;
 use IO::File;
 require Exporter;
 use vars qw ( @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS );
@@ -183,7 +183,7 @@ sub _urlesc($)
 
 =head1 VERSION
 
-	$Revision: 1.6 $
+	$Revision: 1.7 $
 
 =head1 SYNOPSIS
 
@@ -1137,16 +1137,17 @@ sub parse
 		$contents =~ s/^\s+//;
 		$contents =~ s/\s+$//;
 		# Remove whitespace in quoted values.
-		$contents =~ s|"([^="]*)"|
+		$contents =~ s|"([^"]*)"|
 			my $value = $1;
 			$value =~ s/ /\&#032;/g;
 			$value =~ s/\t/\&#009;/g;
 			$value =~ s/\n/\&#010;/g;
 			$value =~ s/\r/\&#013;/g;
+			$value =~ s/=/\&#061;/g;
 			$value;
 		|egm;
 		# Remove whitespace between parameters/equals-signs/values.
-                $contents =~ s/\s*=\s*/=/g;
+                $contents =~ s/\s+=\s+/=/g;
 
                 my %params = ();
 		# Chop up the contents into the tag name and the params.
