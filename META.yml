@@ -1,0 +1,12 @@
+name: Text-TagTemplate
+module_name: Text::TagTemplate
+version: 1.6.1
+license: LGPL
+distribution_type: module
+no_index:
+  directory:
+    - inc
+private:
+  directory:
+    - inc
+generated_by: Module::Install version 0.27
