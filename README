@@ -1,0 +1,50 @@
+================================================================================
+
+README for Text::TagTemplate
+
+Copyright (C) 1999 SF Interactive, Inc.  All rights reserved.
+
+Author:  Jacob Davies <jacob@well.com> <jacob@sfinteractive.com>
+
+$Id: README,v 1.1 2002/05/29 00:38:37 matisse Exp $
+
+================================================================================
+
+This is the Text::TagTemplate module.
+
+It's designed to make the production of web-based applications such as CGI
+programs and Apache::Registry scripts easier and faster, by separating the HTML
+coding from the coding of the application logic.  It's also designed to be
+flexible, to use a template interface that is simple and easy for
+non-programmers to understand, and to be reasonably fast.
+
+There is not much particularly web-specific about it, and indeed it may well
+prove useful in other application areas; however, that is the main focus of the
+design.
+
+There are other modules that do similar things that you may or may not be
+interested in:
+
+	CGI::FastTemplate
+	Text::Template
+	Text::FillIn
+
+If you know of others, please inform me.
+
+To install this module, you should just be able to do:
+
+	perl Makefile.PL
+	make
+	make install
+
+Once you've done that, use ``perldoc Text::TagTemplate'' for more
+documentation.  You may be interested in looking at the example CGI application
+supplied in the example/ subdirectory, which demonstrates some of the functions
+of this module and may help you towards building your first application with
+it.
+
+I'd love to hear your suggestions, amendments, comments, bug reports, bug
+fixes, and the like.  Direct them to <jacob@well.com>.
+
+If you use this module in a web application, I'd also love to hear about it,
+particularly if the web application is also free software.
