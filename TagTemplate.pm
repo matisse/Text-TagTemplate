@@ -31,7 +31,7 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-( $VERSION ) = '$Revision: 1.5 $' =~ /([\d.]+)/;
+( $VERSION ) = '$Revision: 1.6 $' =~ /([\d.]+)/;
 use IO::File;
 require Exporter;
 use vars qw ( @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS );
@@ -183,7 +183,7 @@ sub _urlesc($)
 
 =head1 VERSION
 
-	$Revision: 1.5 $
+	$Revision: 1.6 $
 
 =head1 SYNOPSIS
 
@@ -1130,7 +1130,6 @@ sub parse
 
 	# Loop until we have replaced all the tags.
         while ( $string =~ /<#([^<>]*)>/g ) {
-warn $string;
                 my $contents = $1;
 		my $q_contents = quotemeta $contents;
 		my $o_contents = $contents; # preserve in case we're ignoring.
