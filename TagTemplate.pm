@@ -7,7 +7,8 @@
 #
 # Copyright (C) 2000 SF Interactive, Inc.  All rights reserved.
 #
-# Author:  Jacob Davies <jacob@sfinteractive.com> <jacob@well.com>
+# Maintainer: Matisse Enzer <matisse@matisse.net> (30 May 2002)
+# Author:  Jacob Davies <jacob@well.com>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -30,7 +31,7 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-( $VERSION ) = '$Revision: 1.4 $' =~ /([\d.]+)/;
+( $VERSION ) = '$Revision: 1.5 $' =~ /([\d.]+)/;
 use IO::File;
 require Exporter;
 use vars qw ( @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS );
@@ -182,7 +183,7 @@ sub _urlesc($)
 
 =head1 VERSION
 
-	$Revision: 1.4 $
+	$Revision: 1.5 $
 
 =head1 SYNOPSIS
 
@@ -295,6 +296,9 @@ or optionally with parameters like:
 or with quoted parameters like:
 
 	<#TAG NAME="Value, including spaces etc.">
+
+Tags may be embedded in other tags (as of version 1.5), e.g.
+    <#USERINFO DISPLAY="<#FAVORITE_COLOR>">
 
 The tag name is the first part after the opening <# of the whole tag.  It must
 be a simple identifier -- I recommend sticking to the character set [A-Z_] for
@@ -1125,7 +1129,8 @@ sub parse
 	}
 
 	# Loop until we have replaced all the tags.
-        while ( $string =~ /<#([^>]*)>/g ) {
+        while ( $string =~ /<#([^<>]*)>/g ) {
+warn $string;
                 my $contents = $1;
 		my $q_contents = quotemeta $contents;
 		my $o_contents = $contents; # preserve in case we're ignoring.
@@ -1392,8 +1397,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 Jacob Davies
 
-	<jacob@sfinteractive.com>
 	<jacob@well.com>
+
+=head1 MAINTAINER
+
+Matisse Enzer
+
+	<matisse@matisse.net>
 
 =head1 SEE ALSO
 
