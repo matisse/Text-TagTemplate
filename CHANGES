@@ -2,9 +2,16 @@
 
 CHANGES for Text::TagTemplate
 
-$Id: CHANGES,v 1.7 2003/11/24 17:07:29 matisse Exp $
+$Id: CHANGES,v 1.8 2003/12/02 16:41:57 matisse Exp $
 
 ================================================================================
+
+Version 1.7
+
+Changed version number to 1.7 because CPAN doesn't handle
+'dot releases' properly. This version is idential to 1.6.1
+
+--------------------------------------------------------------------------------
 
 Version 1.6.1
 
