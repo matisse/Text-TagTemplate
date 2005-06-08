@@ -31,22 +31,40 @@ use strict;
 use 5.004;
 use English;
 use vars qw( $VERSION );
-# '$Revision: 1.13 $' =~ /([\d.]+)/;
-$VERSION = '1.81';
+# '$Revision: 1.14 $' =~ /([\d.]+)/;
+$VERSION = '1.82';
 use IO::File;
 require Exporter;
 use vars qw ( @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS );
 @ISA         = qw( Exporter );
 @EXPORT      = qw( );
-@EXPORT_OK   = qw( auto_cap unknown_action
-                   tags add_tag list_tag add_list_tag add_tags delete_tag
-		   clear_tags
+@EXPORT_OK   = qw(
+                   auto_cap
+                   unknown_action
+                   tags
+                   add_tag
+                   list_tag
+                   add_list_tag
+                   add_tags
+                   delete_tag
+                   clear_tags
 		   template_string template_file
 		   list
-		   entry_string    entry_file entry_callback
-		   join_string     join_file  join_tags
-		   parse      parse_file
-		   parse_list parse_list_files );
+		   entry_string
+		   entry_file
+		   entry_callback
+		   join_string
+		   join_file
+		   join_tags
+		   parse
+		   parse_file
+		   parse_list
+		   parse_list_files
+		   tag_start
+		   tag_contents
+		   tag_end
+		   tag_pattern
+		 );
 %EXPORT_TAGS = ( standard => [ qw( tags add_tag add_tags list_tag add_list_tag
                                    delete_tag clear_tags
                                    template_string template_file
@@ -85,6 +103,11 @@ sub parse;
 sub parse_file;
 sub parse_list;
 sub parse_list_files;
+
+sub tag_start;
+sub tag_contents;
+sub tag_end;
+sub tag_pattern;
 
 sub _self_or_default;
 sub _get_file;
@@ -184,7 +207,7 @@ sub _urlesc($)
 
 =head1 VERSION
 
-	1.7
+	1.82
 
 =head1 SYNOPSIS
 
@@ -716,16 +739,20 @@ OO interface would look like:
 
 =head1 PER-METHOD DOCUMENTATION
 
+The following are the public methods provided by B<Text::TagTemplate>.
+
 =cut
 
 #-------------------------------------------------------------------------------
 
-=over 4
-
-=item C<new()> or C<new( %tags )> or C<new( \%tags )>
+=head1 B<new()> or new( I<%tags> ) or new( I<\%tags> )
 
 Instantiate a new template object.
 Optionally take a hash or hash-ref of tags to add initially.
+
+  my $parser = Text::TagTemplate->new();
+  my $parser = Text::TagTemplate->new( %tags );
+  my $parser = Text::TagTemplate->new( \%tags );
 
 =cut
 
@@ -748,11 +775,140 @@ sub new
 	$self->{ JOIN_STRING    } = '';
 	$self->{ JOIN_FILE      } = undef;
 	$self->{ JOIN_TAGS      } = undef;
+	$self->{ TAG_START      } = '<#';
+	$self->{ TAG_CONTENTS   } = '[^<>]*';
+	$self->{ TAG_END        } = '>';
 
 	bless $self, $class;
 
 	$self->add_tags( @tags ) if @tags;
 	return $self;
+}
+
+
+=head1 Setting the Tag Pattern
+
+The default pattern for tags is C<E<lt>#TAGNAME attributes E<gt>>.
+This is implemented internally as a regular expression:
+C<(?-xism:E<lt>#([^E<lt>E<gt>]*))> made up from three pieces which you may
+override using the next three methods I<tag_start()>, I<tag_end()>,
+and I<tag_contents()>.
+
+For example, you might want to use a pattern for tags that does I<not> look
+like HTML tags, perhaps to avoid confusing some HTML parsing tool.
+
+Examples;
+
+To use tags like this:
+
+   /* TAGNAME attribute=value attribute2=value */
+
+Do this:
+
+   tag_start('/\*');       # you must escape the * character
+   tag_contents('[^*]*');  # * inside [] does not need escaping
+   tag_end('\*/');         # escape the *
+
+=cut
+
+#-------------------------------------------------------------------------------
+
+=over 4
+
+=item C<tag_start()> or C<tag_start( $pattern )>
+
+Set and or get the pattern used to find the start of tags.
+
+With no arguments returns the current value. The default value is C<E<lt>#>.
+
+If an argument is supplied it is used to replace the current value.
+Returns the new value.
+
+See also tag_contents() and tag_end(), below.
+
+=cut
+
+sub tag_start {
+    my($self,$pattern) = _self_or_default @_;
+    if ($pattern) {
+        $self->{TAG_START} = $pattern;
+    }
+    return $self->{TAG_START};
+}
+
+#-------------------------------------------------------------------------------
+
+=item C<tag_contents()> or C<tag_contents( $pattern )>
+
+Set and or get the pattern used to find the content of tags, that is
+the stuff in between the I<tag_start> and the I<tag_end>.
+
+With no arguments returns the current value. The default value is C<[^E<lt>E<gt>]*>.
+
+If an argument is supplied it is used to replace the current value.
+Returns the new value.
+
+
+The pattern should be something that matches any number of characters that
+are not the end of the tag. (See I<tag_end>, below.) Typ[ically you should
+use an atom followed by *. In the defaul pattern  C<[^E<lt>E<gt>]*> the
+C<[^E<lt>E<gt>]> defines a "character class" consisting of anything I<except>
+E<lt> or E<gt>. The C<*> means "zero-or-more" of the preceding thing.
+
+Examples:
+
+Set the contents pattern to match anything that is not C<-->
+
+=cut
+
+sub tag_contents {
+    my($self,$pattern) = _self_or_default @_;
+    if ($pattern) {
+        $self->{TAG_CONTENTS} = $pattern;
+    }
+    return $self->{TAG_CONTENTS};
+}
+
+#-------------------------------------------------------------------------------
+
+=item C<tag_end()> or C<tag_end( $pattern )>
+
+Set and or get the pattern used to find the end of tags.
+
+With no arguments returns the current value. The default value is C<E<lt>>.
+
+If an argument is supplied it is used to replace the current value.
+Returns the new value.
+
+=cut
+
+sub tag_end {
+    my($self,$pattern) = _self_or_default @_;
+    if ($pattern) {
+        $self->{TAG_END} = $pattern;
+    }
+    return $self->{TAG_END};
+}
+
+#-------------------------------------------------------------------------------
+
+=item C<tag_patten()>
+
+Returns the complete pattern used to find tags. The value is returned as a
+quoted regular expression. The default value is C<(?-xism:E<lt>#([^E<lt>E<gt>]*))>.
+
+Equivalant to:
+
+ $start    = tag_start();
+ $contents = tag_contents();
+ $end      = tag_end();
+ return qr/$start($contents)$end/;
+
+=cut
+
+sub tag_pattern {
+    my ($self) = _self_or_default @_;
+    return qr/$self->{TAG_START}($self->{TAG_CONTENTS})$self->{TAG_END}/;
 }
 
 #-------------------------------------------------------------------------------
@@ -783,7 +939,8 @@ to this value first.  If the action is the special value 'DIE' then it will
 die at that point. This is the default.  If the action is the special
 value 'IGNORE' then unknown tags will be ignored by the module, and
 will appear unchanged in the parsed output.  If the special value 'WARN' is
-used then the the unknown tags will be replaced by warning text and logged with a  warn()  call.  Other special values may be supplied later, so if scalar
+used then the the unknown tags will be replaced by warning text and logged with a  warn()  call.
+Other special values may be supplied later, so if scalar
 actions are require it is suggested that a scalar ref be supplied, where
 these special actions will not be taken no matter what the value.
 
@@ -1130,7 +1287,8 @@ sub parse
 	}
 
 	# Loop until we have replaced all the tags.
-        while ( $string =~ /<#([^<>]*)>/g ) {
+	    my $regex = $self->tag_pattern();   
+        while ( $string =~ /$regex/g ) {
                 my $contents = $1;
 		my $q_contents = quotemeta $contents;
 		my $o_contents = $contents; # preserve in case we're ignoring.
@@ -1183,7 +1341,7 @@ sub parse
 				warn "unknown tag: $tag";
 			} elsif ( $self->{ UNKNOWN_ACTION } eq 'IGNORE' ) {
 				$string
-				   =~ s/<#$q_contents>/\000#$o_contents\000/;
+				   =~ s/$self->{TAG_START}$q_contents$self->{TAG_END}/\000#$o_contents\000/;
 			} else {
 				# let sub refs know which tags this is.
 				$params{ TAG } = $tag;
@@ -1234,12 +1392,12 @@ sub parse
 		# Substitute in the string.
                 {
                     no warnings; # Avoid stoopid warnings in case $rep is empty
-                    $string =~ s/<#$q_contents>/$rep/;
+                    $string =~ s/$self->{TAG_START}$q_contents$self->{TAG_END}/$rep/;
                 }
         }
 
 	if ( $self->{ UNKNOWN_ACTION } eq 'IGNORE' ) {
-		$string =~ s/\000#([^\000]*)\000/<#$1>/g;
+		$string =~ s/\000#([^\000]*)\000/$self->{TAG_START}$1$self->{TAG_END}/g;
 	}
 
         return $string;
