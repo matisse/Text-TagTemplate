@@ -1,4 +1,6 @@
-#!/usr/bin/perl -Tw
+#!/usr/bin/perl -w
+#
+# TODO: Add unit tests for this example.
 #
 # This program is designed as corporate store-locator.
 #
