@@ -8,13 +8,13 @@ License: GNU LGPL
 Maintainer: Matisse Enzer <matisse@matisse.net>
 Author:  Jacob Davies <jacob@well.com>
 
-$Id: README,v 1.6 2002/06/03 16:03:19 matisse Exp $
+$Id: README,v 1.7 2005/10/23 20:25:21 matisse Exp $
 
 ================================================================================
 
 This is the Text::TagTemplate module.
 
-TagTemplate is designed to completelt separate HTML/XML coding from
+TagTemplate is designed to completely separate HTML/XML coding from
 the coding of the application logic.  It's also designed to be flexible,
 to use a template interface that is simple and easy for non-programmers
 to understand, and to be reasonably fast.
@@ -50,6 +50,7 @@ To install this module, you should just be able to do:
 
 	perl Makefile.PL
 	make
+	make test
 	make install
 
 Once you've done that, use ``perldoc Text::TagTemplate'' for more
