@@ -29,10 +29,11 @@
 package Text::TagTemplate;
 use strict;
 use 5.004;
-use English;
+use Carp qw(cluck confess);
+use English qw(-no_match_vars);
 use vars qw( $VERSION );
-# '$Revision: 1.14 $' =~ /([\d.]+)/;
-$VERSION = '1.82';
+# '$Revision: 1.1 $' =~ /([\d.]+)/;
+$VERSION = '1.83';
 use IO::File;
 require Exporter;
 use vars qw ( @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS );
@@ -156,15 +157,15 @@ sub _self_or_default {
 #-------------------------------------------------------------------------------
 # _get_file( $file )
 #
-# Slurps the supplied file; dies if it can't find it.
+# Slurps the supplied file; confesses if it can't find it.
 
 sub _get_file
 {
 	my( $file ) = @_;
 	local $INPUT_RECORD_SEPARATOR = undef;
-	open( GET_FILE, "<$file" ) or die( "couldn't open $file: $ERRNO" );
+	open( GET_FILE, "<$file" ) or confess( "couldn't open $file: $ERRNO" );
 	my $string = <GET_FILE>;
-	close( GET_FILE ) or die( "couldn't close $file: $ERRNO" );
+	close( GET_FILE ) or confess( "couldn't close $file: $ERRNO" );
 	return $string;
 }
 
@@ -468,7 +469,7 @@ future coding work.
 =head2 Default Action
 
 If no action is supplied for a tag, the default action is used.  The default
-default action is to die() with an error, since usually the use of unknown tags
+default action is to confess() with an error, since usually the use of unknown tags
 indicates a bug in the application.  You may wish to simply ignore unknown tags
 and replace them with blank space, in which case you can use the
 unknown_action() method to change it.  If you wish to ignore unknown
@@ -478,11 +479,11 @@ tags, you set this to the special value ``IGNORE''. For example:
 
 Unknown tags will then be left in the output (and typically ignored by
 web browsers.)  The default action is indicated by the special value
-``DIE''.  If you want to have unknown tags just be replaced by warning text
-(and be logged with a warn() call), use the special value ``WARN''.
+``CONFESS''.  If you want to have unknown tags just be replaced by warning text
+(and be logged with a cluck() call), use the special value ``CLUCK''.
 For example:
 
-	unknown_action( 'WARN' );
+	unknown_action( 'CLUCK' );
 
 If the default action is a subroutine reference then the name of the
 unknown tag is passed as a parameter called ''TAG''. For example:
@@ -763,7 +764,7 @@ sub new
 	$class = ref( $class ) || $class;
 
 	$self->{ AUTO_CAP       } = 1;
-	$self->{ UNKNOWN_ACTION } = 'DIE';
+	$self->{ UNKNOWN_ACTION } = 'CONFESS';
 
 	$self->{ TAGS           } = +{};
 	$self->{ STRING         } = '';
@@ -935,11 +936,12 @@ sub auto_cap
 =item C<unknown_action()> or C<unknown_action( $action )>
 
 Returns what to do with unknown tags.  If a value is supplied sets the action
-to this value first.  If the action is the special value 'DIE' then it will
-die at that point. This is the default.  If the action is the special
+to this value first.  If the action is the special value 'CONFESS' then it will
+confess() at that point. This is the default.  If the action is the special
 value 'IGNORE' then unknown tags will be ignored by the module, and
-will appear unchanged in the parsed output.  If the special value 'WARN' is
-used then the the unknown tags will be replaced by warning text and logged with a  warn()  call.
+will appear unchanged in the parsed output.  If the special value 'CLUCK' is
+used then the the unknown tags will be replaced by warning text and logged with a  cluck()  call. (See L<Carp> for cluck() and confess() - these are
+like warn() and (die(), but with a stack trace.)
 Other special values may be supplied later, so if scalar
 actions are require it is suggested that a scalar ref be supplied, where
 these special actions will not be taken no matter what the value.
@@ -1334,11 +1336,11 @@ sub parse
 		my $uc_tag = uc $tag;
 		my $action = $tags->{ $uc_tag };
 		unless ( exists $tags->{ $uc_tag } ) {
-			if (      $self->{ UNKNOWN_ACTION } eq 'DIE'    ) {
-                		die "unknown tag: $tag";
-			} elsif ( $self->{ UNKNOWN_ACTION } eq 'WARN'   ) {
+			if (      $self->{ UNKNOWN_ACTION } eq 'CONFESS'    ) {
+                		confess "unknown tag: $tag";
+			} elsif ( $self->{ UNKNOWN_ACTION } eq 'CLUCK'   ) {
 				$action = "unknown tag: $tag";
-				warn "unknown tag: $tag";
+				cluck "unknown tag: $tag";
 			} elsif ( $self->{ UNKNOWN_ACTION } eq 'IGNORE' ) {
 				$string
 				   =~ s/$self->{TAG_START}$q_contents$self->{TAG_END}/\000#$o_contents\000/;
@@ -1575,3 +1577,5 @@ there, which contains a full CGI application using this module.
 The CGI module documentation.
 
 Apache::TagRegistry(1)
+
+Carp(3)

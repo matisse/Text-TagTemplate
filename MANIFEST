@@ -5,7 +5,7 @@ MANIFEST
 META.yml
 Makefile.PL
 README
-TagTemplate.pm
+lib/Text/TagTemplate.pm
 example/cgi-bin/locate.cgi
 example/data/stores.txt
 example/html/default.html
@@ -19,4 +19,3 @@ t/basic.t
 t/test-entry.htmlf
 t/test-join.htmlf
 t/test.html
-test.pl

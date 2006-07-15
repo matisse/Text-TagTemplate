@@ -33,7 +33,7 @@ isa_ok($t3,'Text::TagTemplate',"Create a new object with tags in a hashref.");
 cmp_ok( $t->auto_cap(0),'==',0,"auto_cap() - Set auto_cap to 0");
 cmp_ok( $t->auto_cap(1),'==',1,"auto_cap() - Set auto_cap to 1");
 
-cmp_ok($t->unknown_action,'eq','DIE',"unknown_action() - Get value.");
+cmp_ok($t->unknown_action,'eq','CONFESS',"unknown_action() - Get value.");
 cmp_ok($t->unknown_action( 'foo' ),'eq','foo',"unknown_action() - Set value.");
 
 cmp_ok(join( ' ', sort %{ $t2->tags } ),'eq', '1 2 3 4', "tags() - Get tags from object created with hash.");
