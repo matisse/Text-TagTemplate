@@ -6,7 +6,6 @@
 use strict;
 use Test::More( tests => 75 );
 use FindBin qw($Bin);
-use lib "$Bin/../blib/lib";  # Use the copy of the module in the build library
 chdir $Bin;
 use_ok('Text::TagTemplate');
 
